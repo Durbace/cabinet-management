@@ -1,0 +1,32 @@
+{
+  "name": "cabinet-management-pwa",
+  "version": "1.0.0",
+  "description": "Angular PWA mobile-first for managing patients, appointments, sessions, payments, expenses and dashboard analytics for a small therapy practice.",
+  "scripts": {
+    "start": "ng serve",
+    "build": "ng build",
+    "serve:pwa": "ng build && http-server dist/cabinet-management-dashboard/browser -p 8080 -c-1",
+    "test": "ng test"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "^21.0.0",
+    "@angular/common": "^21.0.0",
+    "@angular/compiler": "^21.0.0",
+    "@angular/core": "^21.0.0",
+    "@angular/forms": "^21.0.0",
+    "@angular/platform-browser": "^21.0.0",
+    "@angular/router": "^21.0.0",
+    "rxjs": "~7.8.2",
+    "tslib": "^2.8.1",
+    "zone.js": "~0.15.1",
+    "@angular/service-worker": "^21.0.0"
+  },
+  "devDependencies": {
+    "@angular/build": "^21.0.0",
+    "@angular/cli": "^21.0.0",
+    "@angular/compiler-cli": "^21.0.0",
+    "typescript": "~5.9.3",
+    "http-server": "^14.1.1"
+  }
+}
