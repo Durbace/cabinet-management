@@ -29,8 +29,6 @@ export interface Patient {
 export interface ServiceType {
   id: string;
   name: string;
-  price: number;
-  durationMinutes: number;
 }
 
 export interface Appointment {
@@ -67,7 +65,6 @@ export interface Payment {
   amount: number;
   method: PaymentMethod;
   date: string;
-  notes?: string;
   createdAt: string;
 }
 

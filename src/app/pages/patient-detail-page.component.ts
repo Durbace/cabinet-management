@@ -151,14 +151,13 @@ import { formatRon, todayIso } from '../utils/date-utils';
           } @else {
             <div class="desktop-table table-wrap">
               <table>
-                <thead><tr><th>Data</th><th>Sumă</th><th>Metodă</th><th>Note</th></tr></thead>
+                <thead><tr><th>Data</th><th>Sumă</th><th>Metodă</th></tr></thead>
                 <tbody>
                   @for (payment of patientPayments(); track payment.id) {
                     <tr>
                       <td>{{ payment.date }}</td>
                       <td><strong>{{ money(payment.amount) }}</strong></td>
                       <td>{{ payment.method }}</td>
-                      <td>{{ payment.notes || '-' }}</td>
                     </tr>
                   }
                 </tbody>
@@ -174,9 +173,6 @@ import { formatRon, todayIso } from '../utils/date-utils';
                       <div class="mobile-card-subtitle">{{ payment.date }} • {{ payment.method }}</div>
                     </div>
                     <span class="badge success">Plată</span>
-                  </div>
-                  <div class="mobile-card-grid">
-                    <div class="mobile-field"><span>Note</span><strong>{{ payment.notes || '-' }}</strong></div>
                   </div>
                 </article>
               }

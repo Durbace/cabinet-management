@@ -1,7 +1,6 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import html2pdf from 'html2pdf.js';
 
 import { CabinetStoreService } from '../cabinet-store.service';
 import { formatRon, todayIso } from '../utils/date-utils';
@@ -149,25 +148,25 @@ export class ExpensesPageComponent {
   }
 
   deleteExpense(id: string): void {
-  const confirmed = window.confirm('Sigur vrei să ștergi această cheltuială?');
+    const confirmed = window.confirm('Sigur vrei să ștergi această cheltuială?');
 
-  if (!confirmed) return;
+    if (!confirmed) return;
 
-  this.store.deleteExpense(id);
-}
-
-  exportPdf(): void {
-  const expenses = this.filteredExpenses();
-
-  if (expenses.length === 0) {
-    alert('Nu există cheltuieli de exportat.');
-    return;
+    this.store.deleteExpense(id);
   }
 
-  const total = expenses.reduce((sum, expense) => sum + expense.amount, 0);
-  const generatedAt = new Date().toLocaleString('ro-RO');
+  async exportPdf(): Promise<void> {
+    const expenses = this.filteredExpenses();
 
-  const rowsHtml = expenses.map((expense) => `
+    if (expenses.length === 0) {
+      alert('Nu există cheltuieli de exportat.');
+      return;
+    }
+
+    const total = expenses.reduce((sum, expense) => sum + expense.amount, 0);
+    const generatedAt = new Date().toLocaleString('ro-RO');
+
+    const rowsHtml = expenses.map((expense) => `
     <article class="expense-card">
       <div class="expense-top">
         <div>
@@ -183,9 +182,9 @@ export class ExpensesPageComponent {
     </article>
   `).join('');
 
-  const element = document.createElement('div');
+    const element = document.createElement('div');
 
-  element.innerHTML = `
+    element.innerHTML = `
     <style>
       * {
         box-sizing: border-box;
@@ -317,42 +316,44 @@ export class ExpensesPageComponent {
     </main>
   `;
 
-  document.body.appendChild(element);
+    document.body.appendChild(element);
 
-  const fileName = `raport-cheltuieli-${todayIso()}.pdf`;
+    const fileName = `raport-cheltuieli-${todayIso()}.pdf`;
+    const html2pdfModule = await import('html2pdf.js');
+    const html2pdf = html2pdfModule.default;
 
-  html2pdf()
-    .set({
-      margin: 10,
-      filename: fileName,
-      image: {
-        type: 'jpeg',
-        quality: 0.98
-      },
-      html2canvas: {
-        scale: 2
-      },
-      jsPDF: {
-        unit: 'mm',
-        format: 'a4',
-        orientation: 'portrait'
-      }
-    })
-    .from(element)
-    .save()
-    .then(() => {
-      document.body.removeChild(element);
-    });
-}
+    html2pdf()
+      .set({
+        margin: 10,
+        filename: fileName,
+        image: {
+          type: 'jpeg',
+          quality: 0.98
+        },
+        html2canvas: {
+          scale: 2
+        },
+        jsPDF: {
+          unit: 'mm',
+          format: 'a4',
+          orientation: 'portrait'
+        }
+      })
+      .from(element)
+      .save()
+      .then(() => {
+        document.body.removeChild(element);
+      });
+  }
 
-private escapeHtml(value: unknown): string {
-  return String(value ?? '')
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#039;');
-}
+  private escapeHtml(value: unknown): string {
+    return String(value ?? '')
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#039;');
+  }
 
   money(value: number): string {
     return formatRon(value);

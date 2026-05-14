@@ -40,7 +40,7 @@ import { todayIso } from '../utils/date-utils';
             <label>Serviciu *</label>
             <select formControlName="serviceId">
               @for (service of store.services(); track service.id) {
-                <option [value]="service.id">{{ service.name }} - {{ service.durationMinutes }} min</option>
+                <option [value]="service.id">{{ service.name }}</option>
               }
             </select>
           </div>
@@ -147,14 +147,14 @@ export class AppointmentsPageComponent {
   readonly message = signal('');
 
   readonly form = this.fb.nonNullable.group({
-    patientId: ['', Validators.required],
-    serviceId: ['srv-osteopathy', Validators.required],
-    date: [todayIso(), Validators.required],
-    startTime: ['10:00', Validators.required],
-    endTime: ['10:50', Validators.required],
-    status: ['scheduled' as Appointment['status'], Validators.required],
-    notes: ['']
-  });
+  patientId: ['', Validators.required],
+  serviceId: ['', Validators.required],
+  date: [todayIso(), Validators.required],
+  startTime: ['10:00', Validators.required],
+  endTime: ['10:50', Validators.required],
+  status: ['scheduled' as Appointment['status'], Validators.required],
+  notes: ['']
+});
 
   readonly filteredAppointments = computed(() => {
     const q = this.query().trim().toLowerCase();
@@ -187,14 +187,14 @@ export class AppointmentsPageComponent {
 
     this.message.set('');
     this.form.reset({
-      patientId: '',
-      serviceId: 'srv-osteopathy',
-      date: todayIso(),
-      startTime: '10:00',
-      endTime: '10:50',
-      status: 'scheduled',
-      notes: ''
-    });
+  patientId: '',
+  serviceId: '',
+  date: todayIso(),
+  startTime: '10:00',
+  endTime: '10:50',
+  status: 'scheduled',
+  notes: ''
+});
   }
 
   setStatus(id: string, status: Appointment['status']): void {

@@ -72,10 +72,6 @@ import { downloadCsv, formatRon, todayIso } from '../utils/date-utils';
             <label>Data *</label>
             <input type="date" formControlName="date" />
           </div>
-          <div class="form-field full">
-            <label>Note</label>
-            <textarea formControlName="notes"></textarea>
-          </div>
           <div class="actions full">
             <button type="submit" [disabled]="form.invalid">Adaugă plată</button>
           </div>
@@ -123,7 +119,6 @@ import { downloadCsv, formatRon, todayIso } from '../utils/date-utils';
               <div class="mobile-card-grid">
                 <div class="mobile-field"><span>Pacient</span><a [routerLink]="['/patients', payment.patientId]"><strong>{{ store.getPatientName(payment.patientId) }}</strong></a></div>
                 <div class="mobile-field"><span>Serviciu</span><strong>{{ store.getService(payment.serviceId)?.name || '-' }}</strong></div>
-                <div class="mobile-field"><span>Note</span><strong>{{ payment.notes || '-' }}</strong></div>
               </div>
 
               <div class="mobile-card-actions">
@@ -143,13 +138,12 @@ export class PaymentsPageComponent {
   readonly query = signal('');
 
   readonly form = this.fb.nonNullable.group({
-    patientId: ['', Validators.required],
-    serviceId: [''],
-    amount: [0, [Validators.required, Validators.min(1)]],
-    method: ['cash' as Payment['method'], Validators.required],
-    date: [todayIso(), Validators.required],
-    notes: ['']
-  });
+  patientId: ['', Validators.required],
+  serviceId: [''],
+  amount: [0, [Validators.required, Validators.min(1)]],
+  method: ['cash' as Payment['method'], Validators.required],
+  date: [todayIso(), Validators.required]
+});
 
   readonly filteredPayments = computed(() => {
     const q = this.query().trim().toLowerCase();
@@ -172,21 +166,19 @@ export class PaymentsPageComponent {
     if (this.form.invalid) return;
     const value = this.form.getRawValue();
     this.store.addPayment({
-      patientId: value.patientId,
-      serviceId: value.serviceId || undefined,
-      amount: Number(value.amount),
-      method: value.method,
-      date: value.date,
-      notes: value.notes || undefined
-    });
+  patientId: value.patientId,
+  serviceId: value.serviceId || undefined,
+  amount: Number(value.amount),
+  method: value.method,
+  date: value.date
+});
     this.form.reset({
-      patientId: '',
-      serviceId: '',
-      amount: 0,
-      method: 'cash',
-      date: todayIso(),
-      notes: ''
-    });
+  patientId: '',
+  serviceId: '',
+  amount: 0,
+  method: 'cash',
+  date: todayIso()
+});
   }
 
   deletePayment(id: string): void {
@@ -198,15 +190,14 @@ export class PaymentsPageComponent {
 }
 
   exportCsv(): void {
-    downloadCsv('incasari.csv', this.store.payments().map((payment) => ({
-      data: payment.date,
-      pacient: this.store.getPatientName(payment.patientId),
-      serviciu: this.store.getService(payment.serviceId)?.name ?? '',
-      suma: payment.amount,
-      metoda: payment.method,
-      note: payment.notes ?? ''
-    })));
-  }
+  downloadCsv('incasari.csv', this.store.payments().map((payment) => ({
+    data: payment.date,
+    pacient: this.store.getPatientName(payment.patientId),
+    serviciu: this.store.getService(payment.serviceId)?.name ?? '',
+    suma: payment.amount,
+    metoda: payment.method
+  })));
+}
 
   money(value: number): string {
     return formatRon(value);

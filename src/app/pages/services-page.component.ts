@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CabinetStoreService } from '../cabinet-store.service';
 import { ServiceType } from '../models';
-import { formatRon } from '../utils/date-utils';
 
 @Component({
   selector: 'app-services-page',
@@ -33,16 +32,6 @@ import { formatRon } from '../utils/date-utils';
             <input formControlName="name" placeholder="ex: Osteopatie" />
           </div>
 
-          <div class="form-field">
-            <label>Preț *</label>
-            <input type="number" min="0" formControlName="price" />
-          </div>
-
-          <div class="form-field">
-            <label>Durată minute *</label>
-            <input type="number" min="1" formControlName="durationMinutes" />
-          </div>
-
           <div class="actions full">
             <button type="submit" [disabled]="form.invalid">Salvează</button>
 
@@ -69,8 +58,6 @@ import { formatRon } from '../utils/date-utils';
               <thead>
                 <tr>
                   <th>Serviciu</th>
-                  <th>Preț</th>
-                  <th>Durată</th>
                   <th>Acțiuni</th>
                 </tr>
               </thead>
@@ -78,8 +65,6 @@ import { formatRon } from '../utils/date-utils';
                 @for (service of services(); track service.id) {
                   <tr>
                     <td><strong>{{ service.name }}</strong></td>
-                    <td>{{ money(service.price) }}</td>
-                    <td>{{ service.durationMinutes }} min</td>
                     <td>
                       <div class="actions">
                         <button class="secondary" (click)="editService(service)">Edit</button>
@@ -98,9 +83,8 @@ import { formatRon } from '../utils/date-utils';
                 <div class="mobile-card-header">
                   <div>
                     <div class="mobile-card-title">{{ service.name }}</div>
-                    <div class="mobile-card-subtitle">{{ service.durationMinutes }} min</div>
+                    <div class="mobile-card-subtitle">Serviciu cabinet</div>
                   </div>
-                  <span class="badge success">{{ money(service.price) }}</span>
                 </div>
 
                 <div class="mobile-card-actions">
@@ -123,9 +107,7 @@ export class ServicesPageComponent {
   readonly message = signal('');
 
   readonly form = this.fb.nonNullable.group({
-    name: ['', [Validators.required, Validators.minLength(2)]],
-    price: [0, [Validators.required, Validators.min(0)]],
-    durationMinutes: [50, [Validators.required, Validators.min(1)]]
+    name: ['', [Validators.required, Validators.minLength(2)]]
   });
 
   readonly services = computed(() =>
@@ -139,9 +121,7 @@ export class ServicesPageComponent {
 
     this.store.upsertService({
       id: this.editingId() ?? undefined,
-      name: value.name.trim(),
-      price: Number(value.price),
-      durationMinutes: Number(value.durationMinutes)
+      name: value.name.trim()
     });
 
     this.message.set('');
@@ -153,9 +133,7 @@ export class ServicesPageComponent {
     this.message.set('');
 
     this.form.patchValue({
-      name: service.name,
-      price: service.price,
-      durationMinutes: service.durationMinutes
+      name: service.name
     });
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -165,28 +143,22 @@ export class ServicesPageComponent {
     this.editingId.set(null);
 
     this.form.reset({
-      name: '',
-      price: 0,
-      durationMinutes: 50
+      name: ''
     });
   }
 
   deleteService(id: string): void {
-  const confirmed = window.confirm('Sigur vrei să ștergi acest serviciu?');
+    const confirmed = window.confirm('Sigur vrei să ștergi acest serviciu?');
 
-  if (!confirmed) return;
+    if (!confirmed) return;
 
-  const result = this.store.deleteService(id);
+    const result = this.store.deleteService(id);
 
-  if (!result.ok) {
-    this.message.set(result.message);
-    return;
-  }
+    if (!result.ok) {
+      this.message.set(result.message);
+      return;
+    }
 
-  this.message.set('');
-}
-
-  money(value: number): string {
-    return formatRon(value);
+    this.message.set('');
   }
 }
