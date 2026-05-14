@@ -14,9 +14,6 @@ import { calcAge } from '../utils/date-utils';
     <header class="page-header">
       <div>
         <h1 class="page-title">Pacienți</h1>
-        <p class="page-description">
-          Adaugă date de contact, problema principală, zona afectată și observații. Pentru GitHub folosește doar date false.
-        </p>
       </div>
     </header>
 
@@ -252,10 +249,14 @@ export class PatientsPageComponent {
   }
 
   deletePatient(id: string): void {
-    if (confirm('Ștergi pacientul și istoricul lui?')) {
-      this.store.deletePatient(id);
-    }
-  }
+  const confirmed = window.confirm(
+    'Sigur vrei să ștergi acest pacient? Se vor șterge și programările, ședințele și plățile asociate lui.'
+  );
+
+  if (!confirmed) return;
+
+  this.store.deletePatient(id);
+}
 
   age(birthDate?: string): number | null {
     return calcAge(birthDate);

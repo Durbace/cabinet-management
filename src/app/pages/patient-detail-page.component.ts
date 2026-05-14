@@ -69,10 +69,11 @@ import { formatRon, todayIso } from '../utils/date-utils';
             <div class="form-field">
               <label>Serviciu *</label>
               <select formControlName="serviceId">
-                @for (service of store.services(); track service.id) {
-                  <option [value]="service.id">{{ service.name }}</option>
-                }
-              </select>
+  <option value="">Alege serviciu</option>
+  @for (service of store.services(); track service.id) {
+    <option [value]="service.id">{{ service.name }}</option>
+  }
+</select>
             </div>
             <div class="form-field">
               <label>Durere înainte</label>
@@ -113,7 +114,7 @@ import { formatRon, todayIso } from '../utils/date-utils';
                       <td>{{ store.getService(session.serviceId)?.name }}</td>
                       <td>{{ session.painBefore ?? '-' }} → {{ session.painAfter ?? '-' }}</td>
                       <td>{{ session.notes }}<br /><span class="muted">{{ session.recommendation || '' }}</span></td>
-                      <td><button class="danger" (click)="store.deleteSession(session.id)">Șterge</button></td>
+                      <td><button class="danger" (click)="deleteSession(session.id)">Șterge</button></td>
                     </tr>
                   }
                 </tbody>
@@ -135,7 +136,7 @@ import { formatRon, todayIso } from '../utils/date-utils';
                     <div class="mobile-field"><span>Recomandare</span><strong>{{ session.recommendation || '-' }}</strong></div>
                   </div>
                   <div class="mobile-card-actions">
-                    <button class="danger full" (click)="store.deleteSession(session.id)">Șterge</button>
+                    <button class="danger full" (click)="deleteSession(session.id)">Șterge</button>
                   </div>
                 </article>
               }
@@ -213,7 +214,7 @@ export class PatientDetailPageComponent {
 
   readonly sessionForm = this.fb.nonNullable.group({
     date: [todayIso(), Validators.required],
-    serviceId: ['srv-osteopathy', Validators.required],
+    serviceId: ['', Validators.required],
     painBefore: [null as number | null, [Validators.min(0), Validators.max(10)]],
     painAfter: [null as number | null, [Validators.min(0), Validators.max(10)]],
     notes: ['', Validators.required],
@@ -234,12 +235,20 @@ export class PatientDetailPageComponent {
     });
     this.sessionForm.reset({
       date: todayIso(),
-      serviceId: 'srv-osteopathy',
+      serviceId: '',
       painBefore: null,
       painAfter: null,
       notes: '',
       recommendation: ''
     });
+  }
+
+  deleteSession(id: string): void {
+    const confirmed = window.confirm('Sigur vrei să ștergi această ședință din istoricul pacientului?');
+
+    if (!confirmed) return;
+
+    this.store.deleteSession(id);
   }
 
   money(value: number): string {

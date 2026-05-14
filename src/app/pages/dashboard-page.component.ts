@@ -16,7 +16,7 @@ import { formatRon, monthKey } from '../utils/date-utils';
           Imagine rapidă asupra cabinetului: încasări, cheltuieli, programări și pacienți activi.
         </p>
       </div>
-      <button class="secondary" (click)="store.resetDemoData()">Resetează date demo</button>
+      <button class="secondary danger" (click)="resetAllData()">Resetează toate datele</button>
     </header>
 
     <section class="grid grid-4">
@@ -147,6 +147,16 @@ export class DashboardPageComponent {
   });
 
   readonly maxMonthlyRevenue = computed(() => Math.max(1, ...this.revenueByMonth().map((item) => item.total)));
+
+  resetAllData(): void {
+  const confirmed = window.confirm(
+    'Sigur vrei să resetezi toate datele? Această acțiune va șterge pacienții, programările, ședințele, plățile, cheltuielile și serviciile.'
+  );
+
+  if (!confirmed) return;
+
+  this.store.resetDemoData();
+}
 
   money(value: number): string {
     return formatRon(value);

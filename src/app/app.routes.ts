@@ -6,6 +6,7 @@ import { AppointmentsPageComponent } from './pages/appointments-page.component';
 import { PaymentsPageComponent } from './pages/payments-page.component';
 import { ExpensesPageComponent } from './pages/expenses-page.component';
 import { ReportsPageComponent } from './pages/reports-page.component';
+import { ServicesPageComponent } from './pages/services-page.component';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
@@ -16,5 +17,6 @@ export const routes: Routes = [
   { path: 'payments', component: PaymentsPageComponent },
   { path: 'expenses', component: ExpensesPageComponent },
   { path: 'reports', component: ReportsPageComponent },
+  { path: 'services', component: ServicesPageComponent },
   { path: '**', redirectTo: 'dashboard' }
 ];

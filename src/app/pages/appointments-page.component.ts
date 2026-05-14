@@ -102,7 +102,7 @@ import { todayIso } from '../utils/date-utils';
                       <button class="secondary" (click)="setStatus(appointment.id, 'completed')">Efectuat</button>
                       <button class="secondary" (click)="setStatus(appointment.id, 'cancelled')">Anulat</button>
                       <button class="secondary" (click)="setStatus(appointment.id, 'noShow')">No show</button>
-                      <button class="danger" (click)="store.deleteAppointment(appointment.id)">Șterge</button>
+                      <button class="danger" (click)="deleteAppointment(appointment.id)">Șterge</button>
                     </div>
                   </td>
                 </tr>
@@ -131,7 +131,7 @@ import { todayIso } from '../utils/date-utils';
                 <a class="button secondary" [routerLink]="['/patients', appointment.patientId]">Pacient</a>
                 <button class="secondary" (click)="setStatus(appointment.id, 'completed')">Efectuat</button>
                 <button class="secondary" (click)="setStatus(appointment.id, 'cancelled')">Anulat</button>
-                <button class="danger" (click)="store.deleteAppointment(appointment.id)">Șterge</button>
+                <button class="danger" (click)="deleteAppointment(appointment.id)">Șterge</button>
               </div>
             </article>
           }
@@ -201,6 +201,14 @@ export class AppointmentsPageComponent {
     this.store.updateAppointmentStatus(id, status);
   }
 
+  deleteAppointment(id: string): void {
+    const confirmed = window.confirm('Sigur vrei să ștergi această programare?');
+
+    if (!confirmed) return;
+
+    this.store.deleteAppointment(id);
+  }
+
   statusLabel(status: Appointment['status']): string {
     const labels: Record<Appointment['status'], string> = {
       scheduled: 'Programat',
@@ -219,4 +227,6 @@ export class AppointmentsPageComponent {
       noShow: 'warning'
     }[status];
   }
+
+
 }

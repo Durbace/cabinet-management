@@ -14,125 +14,12 @@ interface CabinetState {
 const STORAGE_KEY = 'cabinet-management-dashboard-state-v1';
 
 const seedState: CabinetState = {
-  services: [
-    { id: 'srv-osteopathy', name: 'Osteopatie', price: 180, durationMinutes: 50 },
-    { id: 'srv-kineto', name: 'Kinetoterapie', price: 150, durationMinutes: 50 },
-    { id: 'srv-manual', name: 'Terapie manuală', price: 170, durationMinutes: 50 },
-    { id: 'srv-nutrition', name: 'Nutriție', price: 200, durationMinutes: 60 }
-  ],
-  patients: [
-    {
-      id: 'pat-1',
-      firstName: 'Andrei',
-      lastName: 'Popescu',
-      phone: '0712345678',
-      email: 'andrei.popescu@example.com',
-      birthDate: '1991-05-17',
-      gender: 'male',
-      status: 'active',
-      mainComplaint: 'Durere lombară',
-      problemArea: 'Lombar',
-      symptoms: 'Durere la stat mult pe scaun',
-      painLevel: 6,
-      notes: 'Date demo, nu pacient real.',
-      createdAt: '2026-04-02T10:00:00.000Z',
-      updatedAt: '2026-04-02T10:00:00.000Z'
-    },
-    {
-      id: 'pat-2',
-      firstName: 'Maria',
-      lastName: 'Ionescu',
-      phone: '0798765432',
-      email: 'maria.ionescu@example.com',
-      birthDate: '1984-11-03',
-      gender: 'female',
-      status: 'active',
-      mainComplaint: 'Tensiune cervicală',
-      problemArea: 'Cervical',
-      symptoms: 'Rigiditate și disconfort la birou',
-      painLevel: 5,
-      notes: 'Date demo, nu pacient real.',
-      createdAt: '2026-04-06T12:30:00.000Z',
-      updatedAt: '2026-04-06T12:30:00.000Z'
-    }
-  ],
-  appointments: [
-    {
-      id: 'app-1',
-      patientId: 'pat-1',
-      serviceId: 'srv-osteopathy',
-      date: todayIso(),
-      startTime: '10:00',
-      endTime: '10:50',
-      status: 'scheduled',
-      notes: 'Reevaluare',
-      createdAt: '2026-05-01T09:00:00.000Z'
-    },
-    {
-      id: 'app-2',
-      patientId: 'pat-2',
-      serviceId: 'srv-manual',
-      date: todayIso(),
-      startTime: '12:00',
-      endTime: '12:50',
-      status: 'scheduled',
-      notes: '',
-      createdAt: '2026-05-01T09:20:00.000Z'
-    }
-  ],
-  sessions: [
-    {
-      id: 'ses-1',
-      patientId: 'pat-1',
-      serviceId: 'srv-osteopathy',
-      date: '2026-05-03',
-      painBefore: 6,
-      painAfter: 4,
-      notes: 'Mobilitate mai bună la finalul ședinței.',
-      recommendation: 'Exerciții ușoare zilnic.',
-      createdAt: '2026-05-03T10:55:00.000Z'
-    }
-  ],
-  payments: [
-    {
-      id: 'pay-1',
-      patientId: 'pat-1',
-      serviceId: 'srv-osteopathy',
-      amount: 180,
-      method: 'cash',
-      date: '2026-05-03',
-      notes: 'Ședință osteopatie',
-      createdAt: '2026-05-03T11:00:00.000Z'
-    },
-    {
-      id: 'pay-2',
-      patientId: 'pat-2',
-      serviceId: 'srv-manual',
-      amount: 170,
-      method: 'card',
-      date: '2026-05-05',
-      notes: 'Terapie manuală',
-      createdAt: '2026-05-05T12:55:00.000Z'
-    }
-  ],
-  expenses: [
-    {
-      id: 'exp-1',
-      category: 'Consumabile',
-      amount: 120,
-      date: '2026-05-02',
-      notes: 'Materiale cabinet',
-      createdAt: '2026-05-02T13:00:00.000Z'
-    },
-    {
-      id: 'exp-2',
-      category: 'Marketing',
-      amount: 250,
-      date: '2026-05-08',
-      notes: 'Promovare online',
-      createdAt: '2026-05-08T13:00:00.000Z'
-    }
-  ]
+  services: [],
+  patients: [],
+  appointments: [],
+  sessions: [],
+  payments: [],
+  expenses: []
 };
 
 @Injectable({ providedIn: 'root' })
@@ -179,6 +66,52 @@ export class CabinetStoreService {
   getPatientName(patientId: string): string {
     const patient = this.getPatient(patientId);
     return patient ? `${patient.firstName} ${patient.lastName}` : 'Pacient șters';
+  }
+
+  upsertService(service: Omit<ServiceType, 'id'> & Partial<Pick<ServiceType, 'id'>>): void {
+    this.update((state) => {
+      if (service.id) {
+        return {
+          ...state,
+          services: state.services.map((existing) =>
+            existing.id === service.id ? { ...existing, ...service } : existing
+          )
+        };
+      }
+
+      const created: ServiceType = {
+        ...service,
+        id: crypto.randomUUID()
+      };
+
+      return {
+        ...state,
+        services: [created, ...state.services]
+      };
+    });
+  }
+
+  deleteService(id: string): { ok: true } | { ok: false; message: string } {
+    const state = this.state();
+
+    const isUsed =
+      state.appointments.some((appointment) => appointment.serviceId === id) ||
+      state.sessions.some((session) => session.serviceId === id) ||
+      state.payments.some((payment) => payment.serviceId === id);
+
+    if (isUsed) {
+      return {
+        ok: false,
+        message: 'Serviciul nu poate fi șters pentru că este folosit în programări, ședințe sau plăți.'
+      };
+    }
+
+    this.update((state) => ({
+      ...state,
+      services: state.services.filter((service) => service.id !== id)
+    }));
+
+    return { ok: true };
   }
 
   upsertPatient(patient: Omit<Patient, 'id' | 'createdAt' | 'updatedAt'> & Partial<Pick<Patient, 'id'>>): void {

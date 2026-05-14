@@ -102,7 +102,7 @@ import { downloadCsv, formatRon, todayIso } from '../utils/date-utils';
                   <td>{{ store.getService(payment.serviceId)?.name || '-' }}</td>
                   <td><strong>{{ money(payment.amount) }}</strong></td>
                   <td>{{ payment.method }}</td>
-                  <td><button class="danger" (click)="store.deletePayment(payment.id)">Șterge</button></td>
+                  <td><button class="danger" (click)="deletePayment(payment.id)">Șterge</button></td>
                 </tr>
               }
             </tbody>
@@ -128,7 +128,7 @@ import { downloadCsv, formatRon, todayIso } from '../utils/date-utils';
 
               <div class="mobile-card-actions">
                 <a class="button secondary" [routerLink]="['/patients', payment.patientId]">Pacient</a>
-                <button class="danger" (click)="store.deletePayment(payment.id)">Șterge</button>
+                <button class="danger" (click)="deletePayment(payment.id)">Șterge</button>
               </div>
             </article>
           }
@@ -188,6 +188,14 @@ export class PaymentsPageComponent {
       notes: ''
     });
   }
+
+  deletePayment(id: string): void {
+  const confirmed = window.confirm('Sigur vrei să ștergi această plată?');
+
+  if (!confirmed) return;
+
+  this.store.deletePayment(id);
+}
 
   exportCsv(): void {
     downloadCsv('incasari.csv', this.store.payments().map((payment) => ({

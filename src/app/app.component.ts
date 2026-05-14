@@ -31,6 +31,7 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
           <a routerLink="/payments" routerLinkActive="active">Încasări</a>
           <a routerLink="/expenses" routerLinkActive="active">Cheltuieli</a>
           <a routerLink="/reports" routerLinkActive="active">Rapoarte</a>
+          <a routerLink="/services" routerLinkActive="active">Servicii</a>
         </nav>
       </aside>
 
@@ -40,4 +41,4 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
     </main>
   `
 })
-export class AppComponent {}
+export class AppComponent { }
