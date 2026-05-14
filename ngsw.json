@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1778744076576,
+  "timestamp": 1778745837336,
   "index": "/cabinet-management/index.html",
   "assetGroups": [
     {
@@ -15,7 +15,7 @@
         "/cabinet-management/chunk-BMJWBJW5.js",
         "/cabinet-management/favicon.ico",
         "/cabinet-management/index.html",
-        "/cabinet-management/main-VP6ECLKC.js",
+        "/cabinet-management/main-PAOY6WG5.js",
         "/cabinet-management/manifest.webmanifest",
         "/cabinet-management/polyfills-5CFQRCPP.js",
         "/cabinet-management/styles-KPNCOOXH.css"
@@ -55,8 +55,8 @@
     "/cabinet-management/icons/icon-512x512.png": "3c5d64a70d9a58eca7c113753890ad64ff69ad6f",
     "/cabinet-management/icons/icon-72x72.png": "adfb40699b818a779b6876e21e6677628d7f68c6",
     "/cabinet-management/icons/icon-96x96.png": "e75c1665ecedb195f711fb0d94d64c4187a521ef",
-    "/cabinet-management/index.html": "2ab787ab7d781a0259f80915c6142710da942798",
-    "/cabinet-management/main-VP6ECLKC.js": "ca427ee5236ec6dbb7589e294b0c4248e213db71",
+    "/cabinet-management/index.html": "56a5efbb7363fb990af3d384eaa46366d0402b93",
+    "/cabinet-management/main-PAOY6WG5.js": "010493900ebaa2f1da482b5a0b91171761816d15",
     "/cabinet-management/manifest.webmanifest": "75f8645c73c9f9491c857c2f3f6825d8f713f901",
     "/cabinet-management/polyfills-5CFQRCPP.js": "f2241e9a25858f895ce299d15f6f22e849e2fd72",
     "/cabinet-management/styles-KPNCOOXH.css": "11cc4de688fdea82e9b968e3d99558a8b726bd8e"
